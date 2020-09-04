@@ -1,8 +1,8 @@
 # Sudoku Solver 
 
-____
-
 This is a sudoku solver using the backtracking algorithm.
+
+___
 
 Future update ideas:
 * Allow user to play interactively (in terminal)
