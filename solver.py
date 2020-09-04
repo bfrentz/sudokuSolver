@@ -73,7 +73,30 @@ def find_empty(board):
             if board[i][j] == EMPTY:
                 return (i, j)    # (row, column)
 
+    # If there are no more empty spots don't return
+    return None
+
 # DEBUG
 #print(find_empty(board1))
 
+def valid_number(board, number, position):
+    # Check against row
+    # Check against column
+    # Check against box
+
+    # Check row
+    for i in range(len(board[position[0]])):
+        if board[position[0]][i] == number and position[1] != i:
+            return False
+
+    # Check column
+    for j in range(len(board)):
+        if board[j][position[1]] == number and position[0] != j:
+            return False
+
+    # Check box
+
+
+# DEBUG
+print(valid_number(board1, 3, (0,2)))
 
