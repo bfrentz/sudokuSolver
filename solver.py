@@ -129,3 +129,42 @@ def valid_number(board, number, position):
 # DEBUG
 #print(valid_number(board1, 4, (6,0)))
 
+
+def solve(board):
+    # Go through board recusively
+
+    # Check and return for last square
+    empty = find_empty(board)
+    if not empty:
+        return True
+    else:
+        row, col = empty
+
+    # Loop through numbers 1-9 to see if they work
+    for i in range(1, 10):
+        if valid_number(board, i, (row, col)):
+            board[row][col] = i
+
+            # Recursive check
+            if solve(board):
+                return True
+
+            board[row][col] = EMPTY
+
+    return False
+
+
+# Print and run nicely
+def main():
+    print()
+    print_board(board1)
+    print()
+    solve(board1)
+    print_board(board1)
+    print()
+
+
+# Run
+main()
+
+
