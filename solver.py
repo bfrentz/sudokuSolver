@@ -86,17 +86,46 @@ def valid_number(board, number, position):
 
     # Check row
     for i in range(len(board[position[0]])):
+        #print(board[position[0]][i], end=' ')
         if board[position[0]][i] == number and position[1] != i:
+            #print("Number in row.")
             return False
+
+    #print()
 
     # Check column
     for j in range(len(board)):
+        #print(board[j][position[1]], end='\n')
         if board[j][position[1]] == number and position[0] != j:
+            #print("Number in col.")
             return False
 
-    # Check box
+    # Check boxes
+    # 0,0 | 0,1 | 0,2
+    # ---------------
+    # 1,0 | 1,1 | 1,2
+    # ---------------
+    # 2,0 | 2,1 | 2,2
+
+    box_x = position[0] // 3
+    box_y = position[1] // 3
+
+    # # DEBUG
+    # print()
+    # print(box_x, box_y)
+    # print()
+
+    for i in range(box_x*3, box_x*3+3):
+        for j in range(box_y*3, box_y*3+3):
+            # # DEBUG
+            # print(i, j)
+            # print(board[i][j])
+            if board[i][j] == number and position[0] != i and position[1] !=j:
+                return False
+
+    return True
 
 
 # DEBUG
-print(valid_number(board1, 3, (0,2)))
+#print(valid_number(board1, 4, (6,0)))
 
