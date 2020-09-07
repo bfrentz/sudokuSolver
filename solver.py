@@ -7,11 +7,43 @@ September 2020
 """
 
 import pprint
+import requests
+import json
+
+
+def get_board():
+    valid_difficulty = False
+    while not valid_difficulty:
+        diff = input("What difficulty of sudoku puzzle (1=easy, 2=medium, 3=hard)? \n")
+        if diff == '1':
+            difficulty = 'easy'
+            valid_difficulty = True
+        elif diff == '2':
+            difficulty = 'medium'
+            valid_difficulty = True
+        elif diff == '3':
+            difficulty = 'hard'
+            valid_difficulty = True
+        else:
+            print("\nPlease input a valid difficulty.\n")
+
+    link = 'https://sugoku.herokuapp.com/board?difficulty='+difficulty
+    req = requests.get(link)
+    board = json.loads(req.text[9:-2])
+    return board
+
+    # #DEBUG
+    # print(req.text[9:-2])
+    # print(b[2])
+
+# DEBUG
+#get_board()
+
 
 # Boards will be 2d list of 9 separate lists of ints
 # One list for each row
 EMPTY = 0
-board1 = [
+testBoard = [
     [7,8,0,4,0,0,1,2,0],
     [6,0,0,0,7,5,0,0,9],
     [0,0,0,6,0,1,0,7,8],
@@ -171,11 +203,12 @@ def solve(board):
 
 # Print and run nicely
 def main():
+    b = get_board()
     print()
-    print_board(board1)
+    print_board(b)
     print()
-    solve(board1)
-    print_board(board1)
+    solve(b)
+    print_board(b)
     print()
 
 
