@@ -8,25 +8,27 @@ September 2020
 
 import pprint
 
-# Boards will be list of 9 separate lists
+# Boards will be 2d list of 9 separate lists of ints
 # One list for each row
-EMPTY = 'X'
+EMPTY = 0
 board1 = [
-    [7,8,'X',4,'X','X',1,2,'X'],
-    [6,'X','X','X',7,5,'X','X',9],
-    ['X','X','X',6,'X',1,'X',7,8],
-    ['X','X',7,'X',4,'X',2,6,'X'],
-    ['X','X',1,'X',5,'X',9,3,'X'],
-    [9,'X',4,'X',6,'X','X','X',5],
-    ['X',7,'X',3,'X','X','X',1,2],
-    [1,2,'X','X','X',7,4,'X','X'],
-    ['X',4,9,2,'X',6,'X','X',7]
+    [7,8,0,4,0,0,1,2,0],
+    [6,0,0,0,7,5,0,0,9],
+    [0,0,0,6,0,1,0,7,8],
+    [0,0,7,0,4,0,2,6,0],
+    [0,0,1,0,5,0,9,3,0],
+    [9,0,4,0,6,0,0,0,5],
+    [0,7,0,3,0,0,0,1,2],
+    [1,2,0,0,0,7,4,0,0],
+    [0,4,9,2,0,6,0,0,7]
 ]
 
 def print_board(board):
-    # Print grid lines around board
-    # Print | on edge and after every third number in list
-    # Print grid line after every third row
+    """
+    Prints the board
+    input: board: 2d List of ints and empty characters (could be 0, 0, or whatever)
+    output: None
+    """
     line = '---------------------'
     print()
 
@@ -67,7 +69,11 @@ Starting with an incomplete board:
 """
 
 def find_empty(board):
-    # Loops through board to find if a position is empty
+    """
+    Finds the next empty space in the board
+    input: board: 2d list of ints and empty characters (could be 'X', 0, or whatever)
+    output: tuple (int, int) for row col of next empty spot
+    """
     for i in range(len(board)):
         for j in range(len(board[0])):
             if board[i][j] == EMPTY:
@@ -80,9 +86,14 @@ def find_empty(board):
 #print(find_empty(board1))
 
 def valid_number(board, number, position):
-    # Check against row
-    # Check against column
-    # Check against box
+    """
+    Returns if the attempted move is valid
+    input: board: 2d list of ints and empty character (could be 'X', 0, or whatever)
+    input: number: int of guess
+    input: position: tuple for spot in grid (row, column)
+    output: bool
+    """
+
 
     # Check row
     for i in range(len(board[position[0]])):
@@ -131,7 +142,11 @@ def valid_number(board, number, position):
 
 
 def solve(board):
-    # Go through board recusively
+    """
+    Solves a sudoku board recursively using backtracking
+    input: board: 2d list of ints and empty character (could be 'X', 0, or whatever)
+    output: solved board
+    """
 
     # Check and return for last square
     empty = find_empty(board)
