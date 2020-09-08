@@ -435,6 +435,7 @@ def main():
                     if board.cubes[i][j].temp != 0:
                         if board.place(board.cubes[i][j].temp):
                             #print('Correct number!')
+                            continue
                         else:
                             print(str(key) + ' is incorrect.')
                             strikes += 1
