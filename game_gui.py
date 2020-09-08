@@ -196,6 +196,10 @@ class Grid:
                 self.model[row][column] = 0
 
         return False
+
+    def solve_board(self):
+
+        print('I will solve the board for you.')
        
 
 class Cube:
@@ -349,8 +353,8 @@ def redraw_window(win, board, time, strikes):
 
     # Draw time
     fnt = pygame.font.SysFont("comicsans", 40)
-    text = fnt.render("Time: " + format_time(time), 1, (0,0,0))
-    win.blit(text, (540 - 160, 560))
+    text = fnt.render("Time - " + format_time(time), 1, (0,0,0))
+    win.blit(text, (540 - 200, 560))
 
     # Draw strikes
     text = fnt.render("X " * strikes, 1, (255,0,0))
@@ -366,13 +370,13 @@ def format_time(time):
     input: time is the elapsed time 
     """
     seconds = time%60
-    minutes = seconds//60
+    minutes = time//60
     hours = minutes//60
 
     if hours == 0:
-        elapsed = ' ' + str(minutes) + ':' + str(seconds)
+        elapsed = '{:02d}:{:02d} '.format(minutes, seconds)
     else:
-        elapsed = ' ' + str(hours) + ':' + str(minutes) + ':' + str(secs)
+        elapsed = '{02d}:{:02d}:{:02d} '.format(hours, minutes, seconds)
 
     return elapsed
 
@@ -427,24 +431,30 @@ def main():
                     key = 8
                 if event.key == pygame.K_9:
                     key = 9
+
                 if event.key == pygame.K_BACKSPACE:
                     board.clear()
                     key = None
+
                 if event.key == pygame.K_RETURN:
                     i, j = board.selected
                     if board.cubes[i][j].temp != 0:
-                        if board.place(board.cubes[i][j].temp):
+                        if not board.place(board.cubes[i][j].temp):
                             #print('Correct number!')
-                            continue
-                        else:
+                            #continue
+                        #else:
                             print(str(key) + ' is incorrect.')
                             strikes += 1
                         key = None
 
-                        # End game
-                        if board.is_finished():
-                            print('The game has ended.')
-                            run = False
+                    # End game
+                    if board.is_finished():
+                        print('\nCongratulations! You have solved the puzzle.')
+                        print('Your final time was ' + format_time(play_time) + '.\n')
+                        run = False
+
+                if event.key == pygame.K_SPACE:
+                    board.solve_board()
 
             # Select square
             if event.type == pygame.MOUSEBUTTONDOWN:
