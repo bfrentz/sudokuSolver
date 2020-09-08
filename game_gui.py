@@ -48,7 +48,7 @@ class Grid:
 
     #board = get_board()
 
-    def __init__(self, rows, columns, width, height):
+    def __init__(self, rows, columns, width, height, win):
         self.rows = rows
         self.columns = columns
         self.width = width
@@ -57,6 +57,7 @@ class Grid:
         self.selected = None
         #self.board = get_board()
         self.cubes = [[Cube(self.board[i][j], i, j, width, height) for j in range(columns)] for i in range(rows)]
+        self.win = win
 
     def update_model(self):
         """
@@ -98,7 +99,7 @@ class Grid:
         self.cubes[row][column].set_temp(val)
 
 
-    def draw(self, win):
+    def draw(self):
         """
         Draws the grid window, cubes, and lines
         input: pygame window
@@ -111,13 +112,13 @@ class Grid:
             else:
                 thickness = 1
 
-            pygame.draw.line(win, (0,0,0), (0,i*gap), (self.width, i*gap), thickness)
-            pygame.draw.line(win, (0,0,0), (i*gap, 0), (i*gap, self.height), thickness)
+            pygame.draw.line(self.win, (0,0,0), (0,i*gap), (self.width, i*gap), thickness)
+            pygame.draw.line(self.win, (0,0,0), (i*gap, 0), (i*gap, self.height), thickness)
 
         # Draw cubes
         for i in range(self.rows):
             for j in range(self.columns):
-                self.cubes[i][j].draw(win)
+                self.cubes[i][j].draw(self.win)
 
 
     def select(self, row, column):
@@ -198,8 +199,40 @@ class Grid:
         return False
 
     def solve_board(self):
+        """
+        Automatically solves the whole board by recursively solving the object's model board. 
+        """
+        # Resets model to match board
+        self.update_model()
+        
+        # Check if any empty squares
+        empty = find_empty(self.model)
+        if not empty:
+            return True
+        else:
+            row, column = empty
 
-        print('I will solve the board for you.')
+        # loop through the numbers to see if they work
+        for i in range(1, 10):
+            if valid_number(self.model, i, (row, column)):
+                self.model[row][column] = i
+                self.cubes[row][column].set(i)
+                self.cubes[row][column].draw_solve(self.win, True)
+                self.update_model()
+                pygame.display.update()
+                pygame.time.delay(100)
+
+                if self.solve_board():
+                    return True
+
+                self.model[row][column] = 0
+                self.cubes[row][column].set(0)
+                self.update_model()
+                self.cubes[row][column].draw_solve(self.win, False)
+                pygame.display.update()
+                pygame.time.delay(100)
+
+        return False
        
 
 class Cube:
@@ -239,6 +272,33 @@ class Cube:
         # Red rectangle around active square
         if self.selected:
             pygame.draw.rect(win, (255,0,0), (x,y,gap,gap), 3)
+
+
+    def draw_solve(self, win, g=True):
+        """
+        Draws the individual squares within the grid as the backtracking algorithm solves the board
+        input: win is the pygame window for the board
+        input: bool g is for if the box is green
+        """
+        fnt = pygame.font.SysFont("comicsans", 40)
+
+        gap = self.width / 9
+        x = self.column * gap
+        y = self.row * gap
+
+        pygame.draw.rect(win, (255, 255, 255), (x, y, gap, gap), 0)
+
+        # Draw value
+        text = fnt.render(str(self.value), 1, (0, 0, 0))
+        win.blit(text, (x + (gap / 2 - text.get_width() / 2), y + (gap / 2 - text.get_height() / 2)))
+
+        # Green box
+        if g:
+            pygame.draw.rect(win, (0, 255, 0), (x, y, gap, gap), 3)
+        # Red box
+        else:
+            pygame.draw.rect(win, (255, 0, 0), (x, y, gap, gap), 3)
+
 
 
     def set(self, val):
@@ -361,7 +421,7 @@ def redraw_window(win, board, time, strikes):
     win.blit(text, (20, 560))
 
     # Draw grid and board
-    board.draw(win)
+    board.draw()
 
 
 def format_time(time):
@@ -394,7 +454,7 @@ def main():
     pygame.display.set_caption(title)
 
     # Initialize board with the same window width but shorter height for base
-    board = Grid(grid_size, grid_size, window_width, window_width)
+    board = Grid(grid_size, grid_size, window_width, window_width, win)
 
     key = None
     run = True
@@ -454,7 +514,10 @@ def main():
                         run = False
 
                 if event.key == pygame.K_SPACE:
+                    print('\nI will solve the board for you, pitiful human.')
                     board.solve_board()
+                    print('\nYou\'re welcome.\n')
+
 
             # Select square
             if event.type == pygame.MOUSEBUTTONDOWN:
